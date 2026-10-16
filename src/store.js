@@ -2,7 +2,7 @@ let db;
 function open() {
   return new Promise((resolve, reject) => {
     if (db) return resolve(db);
-    const req = indexedDB.open("rightlens", 1);
+    const req = indexedDB.open("redlens-ai-camera", 1);
     req.onupgradeneeded = () =>
       req.result.createObjectStore("photos", { keyPath: "id" });
     req.onsuccess = () => {

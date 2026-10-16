@@ -1,4 +1,4 @@
-# RightLens AI 相机
+# RedLens AI Camera
 
 移动端优先的摄影创作 Demo：取景 → 构图 → 拍摄 → 诊断 → 调整 → 保存。
 

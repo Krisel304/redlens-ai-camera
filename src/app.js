@@ -55,7 +55,7 @@ function grid(id = state.template) {
 function render() {
   const activeStream = $("#camera-video")?.srcObject;
   const page = state.page;
-  app.innerHTML = `<aside class="sidebar"><a class="brand" href="/" aria-label="RightLens 首页"><span class="brand-icon">${icon("camera")}</span><span>RightLens<span class="brand-ai">AI</span></span></a><div class="nav-label">你的摄影工作室</div><nav>${btn("camera", icon("camera") + "<span>拍摄空间</span>", page === "camera" ? "nav active" : "nav")}${btn("album", icon("album") + "<span>我的相册</span>", page === "album" ? "nav active" : "nav")}</nav><div class="sidebar-note"><span class="tiny-spark">✧</span><p>好照片，从更好的<br>看见开始。</p><span>SEE MORE. CREATE BETTER.</span></div><div class="sidebar-bottom"><span class="avatar">K</span><div>Kairos 的摄影空间<small>本地私享 · v1.2.0</small></div>${btn("about", icon("info"), "icon-btn", 'aria-label="关于应用"')}</div></aside><main class="workspace"><header class="workspace-header"><div><span class="eyebrow">YOUR EVERYDAY PHOTOGRAPHY COMPANION</span><h1>${page === "camera" ? "让每一拍，都更有把握。" : page === "album" ? "把值得的瞬间，留下来。" : page === "diagnosis" ? "看懂照片，才能拍得更好。" : page === "editor" ? "一点调整，让感觉更对。" : "每个瞬间，都值得细看。"}</h1></div><span class="privacy">${icon("check")} 照片仅保存在此设备</span></header><div class="content ${page === "camera" ? "camera-layout" : ""}">${page === "camera" ? cameraView() : page === "album" ? albumView() : page === "detail" ? detailView() : page === "diagnosis" ? diagnosisView() : editorView()}</div><footer class="workspace-footer"><span>RightLens AI · 为创作多一点灵感</span><span>取景 → 构图 → 拍摄 → 诊断 → 优化</span></footer></main>${state.sheet ? sheetView() : ""}`;
+  app.innerHTML = `<aside class="sidebar"><a class="brand" href="/" aria-label="RedLens 首页"><span class="brand-icon">${icon("camera")}</span><span>RedLens<span class="brand-ai">AI CAMERA</span></span></a><div class="nav-label">你的摄影工作室</div><nav>${btn("camera", icon("camera") + "<span>拍摄空间</span>", page === "camera" ? "nav active" : "nav", 'aria-label="拍摄空间"')}${btn("album", icon("album") + "<span>我的相册</span>", page === "album" ? "nav active" : "nav", 'aria-label="我的相册"')}</nav><div class="sidebar-note"><span class="tiny-spark">✧</span><p>好照片，从更好的<br>看见开始。</p><span>SEE MORE. CREATE BETTER.</span></div><div class="sidebar-bottom"><span class="avatar">K</span><div>Kairos 的摄影空间<small>本地私享 · v1.2.0</small></div>${btn("about", icon("info"), "icon-btn", 'aria-label="关于应用"')}</div></aside><main class="workspace"><header class="workspace-header"><div><span class="eyebrow">YOUR EVERYDAY PHOTOGRAPHY COMPANION</span><h1>${page === "camera" ? "让每一拍，都更有把握。" : page === "album" ? "把值得的瞬间，留下来。" : page === "diagnosis" ? "看懂照片，才能拍得更好。" : page === "editor" ? "一点调整，让感觉更对。" : "每个瞬间，都值得细看。"}</h1></div><span class="privacy">${icon("check")} 照片仅保存在此设备</span></header><div class="content ${page === "camera" ? "camera-layout" : ""}">${page === "camera" ? cameraView() : page === "album" ? albumView() : page === "detail" ? detailView() : page === "diagnosis" ? diagnosisView() : editorView()}</div><footer class="workspace-footer"><span>RedLens AI Camera · 为创作多一点灵感</span><span>取景 → 构图 → 拍摄 → 诊断 → 优化</span></footer></main>${state.sheet ? sheetView() : ""}`;
   bind();
   if (
     activeStream &&
@@ -358,16 +358,16 @@ async function action(name, el) {
       const c = await renderImage(state.current.url);
       const a = document.createElement("a");
       a.href = c.toDataURL("image/jpeg", 0.94);
-      a.download = "RightLens-" + Date.now() + ".jpg";
+      a.download = "RedLens-" + Date.now() + ".jpg";
       a.click();
       toast("照片已准备下载");
     }
     if (name === "share") {
       const blob = await (await fetch(state.current.url)).blob();
-      const file = new File([blob], "RightLens.jpg", { type: blob.type });
+      const file = new File([blob], "RedLens.jpg", { type: blob.type });
       if (navigator.canShare?.({ files: [file] })) {
         try {
-          await navigator.share({ files: [file], title: "RightLens 摄影瞬间" });
+          await navigator.share({ files: [file], title: "RedLens 摄影瞬间" });
         } catch (e) {
           if (e.name !== "AbortError") throw e;
         }
@@ -381,7 +381,7 @@ async function action(name, el) {
       }
     }
     if (name === "about")
-      toast("RightLens v1.2.0 · 本地像素分析 · 照片仅存此设备");
+      toast("RedLens v1.2.0 · 本地像素分析 · 照片仅存此设备");
   } catch (e) {
     console.error(e);
     toast("操作未完成：" + e.message);
