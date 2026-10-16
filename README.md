@@ -1,5 +1,7 @@
 # RedLens AI Camera
 
+体验：[RedLens AI Camera](https://redlens-ai-camera.vercel.app) · 源码：[GitHub](https://github.com/Krisel304/redlens-ai-camera)
+
 移动端优先的摄影创作 Demo：取景 → 构图 → 拍摄 → 诊断 → 调整 → 保存。
 
 ## 本地运行
