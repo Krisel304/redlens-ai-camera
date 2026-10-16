@@ -36,3 +36,9 @@ Vercel：构建命令 `npm run build`，产物目录 `dist`，无需环境变量
 `src/app.js` 页面与交互；`camera.js` 媒体流生命周期；`image.js` 像素诊断和编辑；`store.js` 本地存储；`config.js` 场景模板；`style.css` 响应式样式。
 
 使用语义化版本；每个可验证阶段提交 Git，稳定交付创建标签。后续修改同步更新 CHANGELOG、DEVELOPMENT_LOG、TEST_CHECKLIST 和 KNOWN_ISSUES，禁止将未测试能力标为通过。
+
+## 手机与电脑预览（v1.3.0）
+
+首页画面外可切换手机/电脑，默认手机，切换不重载产品，也不丢失当前操作。可分享 `/?view=phone` 或 `/?view=desktop` 直达指定模式。手机预览是独立窄屏产品界面；电脑模式展示完整摄影工作室。在真实手机上，默认占满屏幕宽度，不显示模拟手机边框。
+
+`index.html` / `src/preview.*` 负责设备预览外框；`camera.html` 为可直接访问的产品页面。摄像头授权传递至同源产品视口。

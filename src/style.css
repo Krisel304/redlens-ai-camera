@@ -1996,3 +1996,136 @@ h1 {
     scroll-behavior: auto !important;
   }
 }
+
+/* Phone layout applies to the product viewport, independent of the preview shell. */
+@media (max-width: 720px) {
+  .workspace {
+    padding: 12px max(12px, env(safe-area-inset-right))
+      max(16px, env(safe-area-inset-bottom))
+      max(12px, env(safe-area-inset-left));
+  }
+  .workspace-header {
+    margin: 0 4px 12px;
+  }
+  .workspace-header .eyebrow {
+    font-size: 8px;
+    letter-spacing: 1px;
+  }
+  .workspace-header h1 {
+    font-size: 16px;
+    margin-top: 6px;
+  }
+  .camera-top {
+    height: 52px;
+    padding: 0 13px;
+  }
+  .camera-title small {
+    font-size: 9px;
+  }
+  .scene-tabs {
+    gap: 8px;
+    margin-bottom: 9px;
+  }
+  .scene {
+    min-height: 36px;
+    padding: 8px 15px;
+    font-size: 12px;
+  }
+  .viewfinder {
+    aspect-ratio: auto;
+    height: clamp(210px, calc(100svh - 320px), 540px);
+  }
+  .scene-image,
+  .viewfinder video {
+    object-fit: contain;
+    background: #202b3c;
+  }
+  .camera-controls {
+    padding: 9px 20px 10px;
+  }
+  .ai-control {
+    min-height: 34px;
+  }
+  .toggle {
+    position: relative;
+  }
+  .toggle::after {
+    content: "";
+    position: absolute;
+    inset: -12px -7px;
+  }
+  .ai-control > span {
+    font-size: 12px;
+  }
+  .camera-controls .shutter-row {
+    margin-top: 9px;
+  }
+  .album-control,
+  .template-control {
+    min-width: 48px;
+    min-height: 48px;
+  }
+  .template-control {
+    justify-content: center;
+  }
+  .template-control small {
+    font-size: 10px;
+  }
+  .capture-foot {
+    margin-top: 2px;
+  }
+  .capture-foot .text-btn {
+    min-height: 30px;
+    font-size: 10px;
+  }
+  .workspace-footer {
+    margin-top: 14px;
+  }
+  .primary,
+  .secondary,
+  .back-btn,
+  .detail-actions .text-btn {
+    min-height: 44px;
+  }
+  .icon-btn {
+    min-width: 40px;
+    min-height: 40px;
+  }
+  .simulate {
+    min-height: 36px;
+    font-size: 10px !important;
+  }
+  .slider-label input {
+    height: 24px;
+  }
+  .slider-label > span {
+    font-size: 13px;
+  }
+  .issue {
+    min-height: 56px;
+  }
+  .issue b {
+    font-size: 12px;
+  }
+  .issue small,
+  .capability-note {
+    font-size: 11px;
+  }
+  .sheet {
+    padding-bottom: max(24px, env(safe-area-inset-bottom));
+  }
+  .sheet h2 {
+    font-size: 17px;
+  }
+  .sample-photo b,
+  .photo-tile b {
+    font-size: 12px;
+  }
+  .sample-photo small,
+  .photo-tile small {
+    font-size: 10px;
+  }
+  #toast {
+    bottom: max(20px, env(safe-area-inset-bottom));
+  }
+}
