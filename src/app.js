@@ -67,7 +67,7 @@ const views = createViews({
   template,
 });
 function render() {
-  if (state.sheet || state.dialog) {
+  if (state.dialog) {
     $("#toast").classList.remove("show");
     clearTimeout(toastTimer);
   }
@@ -75,7 +75,7 @@ function render() {
   const scrollTop = state.resetScroll ? 0 : $(".scroll-screen")?.scrollTop || 0;
   state.resetScroll = false;
   app.dataset.page = state.page;
-  app.innerHTML = `<div class="product-content" ${state.sheet || state.dialog ? "inert" : ""}>${views[state.page]()}</div>${state.sheet ? views.sheet() : ""}${state.dialog ? views.dialog() : ""}`;
+  app.innerHTML = `<div class="product-content" ${state.dialog ? "inert" : ""}>${views[state.page]()}</div>${state.dialog ? views.dialog() : ""}`;
   bind();
   if ($(".scroll-screen")) $(".scroll-screen").scrollTop = scrollTop;
   if (
@@ -240,9 +240,9 @@ async function action(name, el) {
       }
     }
     if (name === "templates") {
-      state.sheet = true;
+      state.sheet = !state.sheet;
       render();
-      $(".sheet .icon-btn")?.focus();
+      $('[data-action="templates"]')?.focus();
     }
     if (name === "close-sheet") {
       state.sheet = false;
@@ -250,9 +250,9 @@ async function action(name, el) {
     }
     if (name === "select-template") {
       state.template = el.dataset.template;
-      state.sheet = false;
+      state.grid = true;
       render();
-      toast("已使用" + template().name);
+      document.querySelector(`[data-template="${state.template}"]`)?.focus();
     }
     if (name === "album") await go("album");
     if (name === "expand") {
@@ -534,7 +534,7 @@ document.addEventListener("keydown", (e) => {
     state.sheet = false;
     render();
   }
-  if ((state.sheet || state.dialog) && e.key === "Tab") {
+  if (state.dialog && e.key === "Tab") {
     const focus = [
       ...$(state.dialog ? ".action-sheet" : ".sheet").querySelectorAll(
         "button:not([disabled])",
@@ -551,7 +551,7 @@ document.addEventListener("keydown", (e) => {
 });
 history.replaceState({ page: "camera" }, "", "#camera");
 window.addEventListener("popstate", async (e) => {
-  if (state.sheet || state.dialog) {
+  if (state.dialog) {
     state.sheet = false;
     state.dialog = null;
     render();
