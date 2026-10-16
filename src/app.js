@@ -1,3 +1,4 @@
+import { createViews } from "./views.js";
 import { icon } from "./icons.js";
 import { samples, templates } from "./config.js";
 import { listPhotos, savePhoto, deletePhoto } from "./store.js";
@@ -15,6 +16,9 @@ const state = {
   photos: [],
   current: null,
   sheet: false,
+  dialog: null,
+  editTab: "brightness",
+  returnPage: "album",
   expanded: true,
   analysis: null,
   selected: new Set(),
@@ -52,14 +56,31 @@ function template() {
 function grid(id = state.template) {
   return `<svg class="guide" viewBox="0 0 300 400" preserveAspectRatio="none" aria-hidden="true">${id === "center" ? '<path d="M150 0v400M0 200h300"/><circle cx="150" cy="200" r="42"/>' : id === "diagonal" ? '<path d="M0 400L300 0M0 0l300 400"/>' : id === "frame" ? '<path d="M0 260h300M75 100h150v230H75z"/>' : '<path d="M100 0v400M200 0v400M0 133h300M0 267h300"/>'}</svg>`;
 }
+const views = createViews({
+  state,
+  btn,
+  icon,
+  esc,
+  grid,
+  samples,
+  templates,
+  template,
+});
 function render() {
+  if (state.sheet || state.dialog) {
+    $("#toast").classList.remove("show");
+    clearTimeout(toastTimer);
+  }
   const activeStream = $("#camera-video")?.srcObject;
-  const page = state.page;
-  app.innerHTML = `<aside class="sidebar"><a class="brand" href="/camera.html" aria-label="RedLens 首页"><span class="brand-icon">${icon("camera")}</span><span>RedLens<span class="brand-ai">AI CAMERA</span></span></a><div class="nav-label">你的摄影工作室</div><nav>${btn("camera", icon("camera") + "<span>拍摄空间</span>", page === "camera" ? "nav active" : "nav", 'aria-label="拍摄空间"')}${btn("album", icon("album") + "<span>我的相册</span>", page === "album" ? "nav active" : "nav", 'aria-label="我的相册"')}</nav><div class="sidebar-note"><span class="tiny-spark">✧</span><p>好照片，从更好的<br>看见开始。</p><span>SEE MORE. CREATE BETTER.</span></div><div class="sidebar-bottom"><span class="avatar">K</span><div>Kairos 的摄影空间<small>本地私享 · v1.3.0</small></div>${btn("about", icon("info"), "icon-btn", 'aria-label="关于应用"')}</div></aside><main class="workspace"><header class="workspace-header"><div><span class="eyebrow">REDLENS AI CAMERA · YOUR PHOTOGRAPHY COMPANION</span><h1>${page === "camera" ? "让每一拍，都更有把握。" : page === "album" ? "把值得的瞬间，留下来。" : page === "diagnosis" ? "看懂照片，才能拍得更好。" : page === "editor" ? "一点调整，让感觉更对。" : "每个瞬间，都值得细看。"}</h1></div><span class="privacy">${icon("check")} 照片仅保存在此设备</span></header><div class="content ${page === "camera" ? "camera-layout" : ""}">${page === "camera" ? cameraView() : page === "album" ? albumView() : page === "detail" ? detailView() : page === "diagnosis" ? diagnosisView() : editorView()}</div><footer class="workspace-footer"><span>RedLens AI Camera · 为创作多一点灵感</span><span>取景 → 构图 → 拍摄 → 诊断 → 优化</span></footer></main>${state.sheet ? sheetView() : ""}`;
+  const scrollTop = state.resetScroll ? 0 : $(".scroll-screen")?.scrollTop || 0;
+  state.resetScroll = false;
+  app.dataset.page = state.page;
+  app.innerHTML = `<div class="product-content" ${state.sheet || state.dialog ? "inert" : ""}>${views[state.page]()}</div>${state.sheet ? views.sheet() : ""}${state.dialog ? views.dialog() : ""}`;
   bind();
+  if ($(".scroll-screen")) $(".scroll-screen").scrollTop = scrollTop;
   if (
     activeStream &&
-    page === "camera" &&
+    state.page === "camera" &&
     state.mode === "live" &&
     $("#camera-video")
   ) {
@@ -68,64 +89,20 @@ function render() {
       .play()
       .catch(() => {});
   }
-  if (page === "editor") updatePreview();
+  if (state.page === "editor") updatePreview();
 }
-function cameraView() {
-  const t = template();
-  return `<section class="camera-card"><div class="camera-top"><div class="camera-title">${icon("camera")}<strong>拍摄</strong><span class="live-dot"></span><small>${state.mode === "sim" ? "模拟体验" : state.mode === "live" ? "实时取景" : "准备就绪"}</small></div>${btn("simulate", "体验模拟拍摄 " + icon("right"), "simulate")}</div><div class="scene-tabs">${["智能", "人像", "风景", "静物"].map((s) => btn("scene", s === "智能" ? icon("spark") + " 智能" : s, `scene ${state.scene === s ? "selected" : ""}`, `data-scene="${s}" ${s === "智能" && !state.ai ? "disabled" : ""}`)).join("")}</div><div class="viewfinder ${state.mode === "idle" ? "empty-view" : ""}">${state.mode === "sim" ? `<img class="scene-image" src="${samples[0].url}" alt="模拟取景：手持雪板的环境人像">` : state.mode === "live" ? '<video id="camera-video" autoplay muted playsinline></video>' : `<div class="camera-empty">${icon("camera")}<h2>准备好，发现新的视角</h2><p id="camera-status">开启相机，或用样例开启一次摄影体验</p>${btn("start-camera", "开启相机", "primary")}${btn("simulate", "先体验模拟拍摄 " + icon("right"), "text-btn")}</div>`}${state.mode !== "idle" ? `<div class="viewfinder-top"><span class="mode-label">${state.mode === "sim" ? "◉ 模拟取景" : "● LIVE"}</span>${btn("grid", icon("grid"), `view-btn ${state.grid ? "on" : ""}`, 'aria-label="切换构图线" aria-pressed="' + state.grid + '"')}</div>${state.grid ? grid() : ""}<div class="focus-corner"></div>${state.ai ? `<div class="guidance">${icon("spark")}<div><b>${t.name} · ${state.scene}摄影</b><span>${t.desc}</span></div></div>` : ""}<div class="viewfinder-bottom"><span>1×</span><span>3 : 4</span></div>` : ""}</div><div class="camera-controls"><div class="ai-control"><span>${icon("spark")} AI 辅助 <small>${state.ai ? "已开启" : "已关闭"}</small></span>${btn("ai", "<span></span>", `toggle ${state.ai ? "on" : ""}`, 'role="switch" aria-label="AI 辅助" aria-checked="' + state.ai + '"')}</div><div class="shutter-row">${btn("album", state.photos.length ? `<img src="${state.photos[0].url}" alt="最新照片">` : icon("album"), "album-control", 'aria-label="打开相册"')}<div class="shutter-wrap">${btn("capture", "<span></span>", "shutter", `${state.mode === "idle" ? "disabled" : ""} aria-label="拍照"`)}<span>照片</span></div>${btn("templates", icon("grid") + "<small>构图模板</small>", "template-control")}</div><div class="capture-foot">${state.mode === "sim" ? btn("start-camera", icon("switch") + " 切换真实相机", "text-btn") : state.mode === "live" ? btn("switch-camera", icon("switch") + " 切换镜头", "text-btn") : btn("upload", icon("upload") + " 导入照片", "text-btn")}<span>JPG · 本地保存</span></div></div></section><aside class="assistant-panel"><div class="assistant-heading"><span class="assistant-symbol">${icon("spark")}</span><div><h2>你的随身摄影助手</h2><p>多一点引导，少一点碰运气</p></div><span class="beta">BETA</span></div><div class="assistant-section"><div class="section-label"><span>${state.ai ? "为当前场景推荐" : "手动构图"}</span><span class="local-tag">${state.ai ? "本地辅助" : "AI 已关闭"}</span></div><div class="recommend-card"><div class="template-art">${grid(t.id)}<span class="subject-dot"></span><span class="mini-label">${t.name}</span></div><div class="recommend-copy"><span class="coral-caption">${state.ai ? "✧ RECOMMENDED" : "COMPOSITION"}</span><h3>${t.name}</h3><p>${t.desc}</p><span class="tag">${t.tag}</span></div></div>${btn("templates", "探索全部构图 " + icon("right"), "all-templates")}</div><div class="assistant-section tips"><div class="section-label"><span>从看见，到好照片</span><span>01 — 03</span></div><div class="tip"><span>01</span><div><b>先找到你的主角</b><p>明确主体，把无关的元素留在画面外。</p></div></div><div class="tip"><span>02</span><div><b>让构图帮你表达</b><p>选择构图模板，让引导线成为你的参考。</p></div></div><div class="tip"><span>03</span><div><b>拍下，再进步一点</b><p>通过照片诊断，看懂光影与色彩的变化。</p></div></div></div><div class="sample-callout"><div><span class="eyebrow">A LITTLE INSPIRATION</span><h3>从一张照片开始探索</h3><p>4 张实拍样例，体验完整创作过程。</p>${btn("album", "浏览样例 " + icon("right"), "text-btn")}</div><img src="/assets/sunset.webp" alt="雪场日落"></div><p class="capability-note">${icon("info")} 当前使用本地像素分析与构图规则，未接入云端视觉模型。照片不会上传至服务器。</p></aside>`;
-}
-function albumView() {
-  return `<section class="album-page"><div class="page-toolbar"><div><h2>我的相册 <span>${state.photos.length}</span></h2><p>每一次创作，都有迹可循。</p></div>${btn("upload", icon("upload") + " 导入照片", "primary")}</div><section class="samples-section"><div class="samples-heading">${btn("expand", `<strong>灵感样例</strong><span>4 张 · 不计入我的照片</span>${icon("chevron")}`, state.expanded ? "expanded" : "")}<div>${btn("sample-prev", icon("arrow"), "icon-btn", 'aria-label="上一张样例"')}${btn("sample-next", icon("right"), "icon-btn", 'aria-label="下一张样例"')}</div></div>${state.expanded ? `<div class="sample-strip">${samples.map((p) => `<button class="sample-photo" data-action="sample" data-id="${p.id}"><img src="${p.url}" alt="${p.name}" draggable="false"><div><b>${p.name}</b><small>${p.location}</small></div><span class="sample-tag">${p.scene}</span></button>`).join("")}</div>` : ""}</section><div class="section-label"><h3>我的照片</h3><span>仅此设备可见</span></div>${state.photos.length ? `<div class="photo-grid">${state.photos.map((p) => `<button class="photo-tile" data-action="photo" data-id="${p.id}"><img src="${p.url}" alt="${esc(p.name)}"><div><b>${esc(p.name)}</b><small>${p.edited ? "编辑版本" : p.source} · ${new Date(p.created).toLocaleDateString("zh-CN")}</small></div></button>`).join("")}</div>` : `<div class="empty-album">${icon("album")}<h3>你的下一张好照片，从这里开始</h3><p>拍一张，或导入一张喜欢的照片。</p>${btn("camera", "去拍摄 " + icon("right"), "secondary")}</div>`}</section>`;
-}
-function pageBack(action, label) {
-  return btn(action, icon("arrow") + label, "back-btn");
-}
-function detailView() {
-  const p = state.current;
-  return `<section class="detail-page">${pageBack("album", "返回相册")}<div class="detail-layout"><div class="photo-stage"><img src="${p.url}" alt="${esc(p.name)}"></div><div class="detail-info"><span class="eyebrow">A MOMENT WORTH KEEPING</span><h2>${esc(p.name)}</h2><p>${p.location || "属于你的摄影瞬间"}</p><div class="metadata"><span>${esc(p.source || "导入照片")}</span><span>${p.edited ? "已编辑 · 原图保留" : "原始照片"}</span></div><div class="diagnose-promo">${icon("spark")}<h3>发现照片的更多可能</h3><p>从亮度、色彩、细节等像素指标，了解这张照片的表现。</p>${btn("diagnose", "开始照片诊断 " + icon("right"), "primary wide")}</div>${btn("edit", icon("edit") + " 手动编辑", "secondary wide")}<div class="detail-actions">${btn("download", icon("download") + " 下载", "text-btn")}${btn("share", icon("share") + " 分享", "text-btn")}${!samples.some((x) => x.id === p.id) ? btn("delete", icon("trash") + " 删除", "text-btn danger") : ""}</div><p class="capability-note">诊断使用本地算法。像素指标仅供参考，无法判断人物表情、画面意图或审美质量。</p></div></div></section>`;
-}
-function diagnosisView() {
-  const a = state.analysis;
-  return `<section class="diagnosis-page">${pageBack("detail", "返回照片")}<div class="diagnosis-layout"><div class="diagnosis-photo"><img src="${state.current.url}" alt="正在诊断的照片"><span>本地像素分析 · 非云端模型</span></div><div class="diagnosis-content"><div class="section-label"><span>PHOTO INSIGHTS</span><span class="local-tag">分析完成</span></div><div class="score-row"><div class="score-circle" style="--score:${a.total}%"><strong>${a.total}<small>/ 100</small></strong></div><div><h2>每张照片，都有自己的光</h2><p>像素指标参考分 · 不代表审美评价</p></div></div><div class="scores">${a.scores.map((s) => `<div><span>${s.name}</span><div><i style="width:${s.value}%"></i></div><b>${s.value}</b></div>`).join("")}</div><div class="highlight">${icon("sun")}<p>${a.highlight}</p></div><div class="section-label"><h3>可以尝试的调整</h3><span>${a.issues.length} 项建议</span></div><div class="issues">${a.issues.length ? a.issues.map((i) => `<label class="issue"><input type="checkbox" data-issue="${i.id}" ${state.selected.has(i.id) ? "checked" : ""}><span><b>${i.title}</b><small>${i.detail}</small></span></label>`).join("") : '<p class="balanced">亮度与色彩处于参考范围内。你仍可以进入编辑，自由探索个人风格。</p>'}</div>${btn("apply", "应用所选建议 " + icon("right"), "primary wide")}${btn("edit", "自由编辑", "text-btn wide")}<p class="capability-note">这些建议来自当前照片的真实像素统计。构图与主体语义仍需由你判断，调整不会恢复过曝丢失的细节。</p></div></div></section>`;
-}
-function editorView() {
-  return `<section class="editor-page"><div class="editor-top">${pageBack("detail", "返回照片")}<span>编辑工作室</span>${btn("save", "保存新版本", "primary", state.busy ? "disabled" : "")}</div><div class="editor-layout"><div class="edit-stage"><canvas id="edit-canvas"></canvas><span class="edit-label">编辑预览</span></div><div class="edit-panel"><div class="section-label"><h3>${icon("edit")} 基础调整</h3>${btn("reset", "重置", "text-btn")}</div>${[
-    ["brightness", "曝光"],
-    ["contrast", "对比度"],
-    ["saturation", "饱和度"],
-    ["warmth", "色温"],
-  ]
-    .map(
-      ([key, name]) =>
-        `<label class="slider-label"><span>${name}<b id="value-${key}">${state.adjust[key]}</b></span><input type="range" min="-60" max="60" value="${state.adjust[key]}" data-adjust="${key}" aria-label="${name}"></label>`,
-    )
-    .join(
-      "",
-    )}<div class="section-label"><h3>画幅与方向</h3>${btn("rotate", icon("rotate"), "icon-btn", 'aria-label="旋转90度"')}</div><div class="crop-options">${[
-    ["original", "原始"],
-    ["portrait", "3 : 4"],
-    ["square", "1 : 1"],
-  ]
-    .map(([id, name]) =>
-      btn(
-        "crop",
-        name,
-        state.adjust.crop === id ? "selected" : "",
-        `data-crop="${id}"`,
-      ),
-    )
-    .join(
-      "",
-    )}</div><div class="edit-history">${btn("undo", icon("undo") + " 撤销", "text-btn", state.historyIndex === 0 ? "disabled" : "")}${btn("redo", icon("redo") + " 重做", "text-btn", state.historyIndex === state.history.length - 1 ? "disabled" : "")}</div>${btn("compare", "按住查看原图", "secondary wide")}<p class="capability-note">所有调整均真实作用于图像像素。保存会创建一个新版本，原图保持完整。</p></div></div></section>`;
-}
-function sheetView() {
-  return `<div class="sheet-backdrop" data-action="close-sheet"><section class="sheet" role="dialog" aria-modal="true" aria-labelledby="sheet-title"><div class="sheet-handle"></div><header><div><span class="eyebrow">FIND YOUR FRAME</span><h2 id="sheet-title">让构图，成为你的表达</h2></div>${btn("close-sheet", icon("close"), "icon-btn", 'aria-label="关闭模板"')}</header><div class="scene-tabs">${["人像", "风景", "静物"].map((s) => btn("scene", s, state.scene === s ? "scene selected" : "scene", `data-scene="${s}"`)).join("")}</div><div class="template-list">${templates[state.scene].map((t, i) => btn("select-template", `<div class="template-mini">${grid(t.id)}<span class="subject-dot"></span></div><div>${state.ai && i === 0 ? '<small class="coral-caption">✧ 推荐构图</small>' : ""}<h3>${t.name}</h3><p>${t.desc}</p><span class="tag">${t.tag}</span></div>${state.template === t.id ? icon("check") : ""}`, `template-option ${state.template === t.id ? "selected" : ""}`, `data-template="${t.id}"`)).join("")}</div><p class="capability-note">${state.ai ? "推荐依据：你选择的场景与内置摄影规则，不代表语义识别结果。" : "AI 辅助已关闭，你可以自由选择手动构图。"}</p></section></div>`;
-}
-async function go(page) {
+async function go(page, push = true) {
+  state.resetScroll = true;
+  if (page === "camera" && state.mode === "live") state.mode = "idle";
+  if (page === "detail" && ["camera", "album"].includes(state.page))
+    state.returnPage = state.page;
   if (state.page === "editor" && page !== "editor") renderSeq++;
   if (page !== "camera") stopCamera();
   state.page = page;
   state.sheet = false;
+  state.dialog = null;
+  if (push && history.state?.page !== page)
+    history.pushState({ page }, "", "#" + page);
   if (page === "album") state.photos = await listPhotos();
   render();
 }
@@ -144,6 +121,7 @@ async function addPhoto(url, source, name = "新的摄影瞬间", extra = {}) {
 }
 async function enterEditor(adjust = {}) {
   state.adjust = { ...defaults, ...adjust };
+  state.editTab = "brightness";
   state.history = [{ ...state.adjust }];
   state.historyIndex = 0;
   await go("editor");
@@ -190,9 +168,32 @@ async function cameraStart() {
 }
 async function action(name, el) {
   try {
+    if (name === "adjust-tab") {
+      state.editTab = el.dataset.tab;
+      render();
+    }
+    if (name === "photo-back") await go(state.returnPage);
+    if (name === "close-dialog") {
+      state.dialog = null;
+      render();
+    }
+    if (name === "confirm-discard") {
+      state.dialog = null;
+      await go("detail");
+    }
+    if (name === "confirm-delete") {
+      await deletePhoto(state.current.id);
+      await go("album");
+      toast("照片已删除");
+    }
+    if (name === "dialog-download") {
+      state.dialog = null;
+      render();
+      await action("download", el);
+    }
     if (name === "camera") {
       stopCamera();
-      state.mode = "idle";
+      if (state.mode === "live") state.mode = "idle";
       await go("camera");
     }
     if (name === "simulate") {
@@ -201,6 +202,9 @@ async function action(name, el) {
       state.scene = "人像";
       state.template = "thirds";
       state.page = "camera";
+      state.sheet = false;
+      state.dialog = null;
+      history.replaceState({ page: "camera" }, "", "#camera");
       render();
       toast("模拟取景已开启 · 使用滑雪人像样例");
     }
@@ -267,7 +271,15 @@ async function action(name, el) {
           : state.photos.find((x) => x.id === el.dataset.id);
       await go("detail");
     }
-    if (name === "detail") await go("detail");
+    if (name === "detail") {
+      if (
+        state.page === "editor" &&
+        JSON.stringify(state.adjust) !== JSON.stringify(defaults)
+      ) {
+        state.dialog = "discard";
+        render();
+      } else await go("detail");
+    }
     if (name === "upload") $("#upload").click();
     if (name === "capture") {
       if (state.busy || state.mode === "idle") return;
@@ -338,6 +350,7 @@ async function action(name, el) {
       if (state.busy) return;
       state.busy = true;
       el.disabled = true;
+      el.textContent = "保存中…";
       try {
         const c = await renderImage(state.current.url, state.adjust);
         const old = state.current;
@@ -371,17 +384,19 @@ async function action(name, el) {
         } catch (e) {
           if (e.name !== "AbortError") throw e;
         }
-      } else toast("当前浏览器不支持图片分享，请使用下载按钮");
-    }
-    if (name === "delete") {
-      if (confirm("删除这张照片？此操作无法撤销。")) {
-        await deletePhoto(state.current.id);
-        await go("album");
-        toast("照片已删除");
+      } else {
+        state.dialog = "share";
+        render();
       }
     }
-    if (name === "about")
-      toast("RedLens v1.3.0 · 本地像素分析 · 照片仅存此设备");
+    if (name === "delete") {
+      state.dialog = "delete";
+      render();
+    }
+    if (name === "about") {
+      state.dialog = "about";
+      render();
+    }
   } catch (e) {
     console.error(e);
     toast("操作未完成：" + e.message);
@@ -390,10 +405,16 @@ async function action(name, el) {
 function bind() {
   app.querySelectorAll("[data-action]").forEach((el) =>
     el.addEventListener("click", (e) => {
-      if (el.classList.contains("sheet-backdrop") && e.target !== el) return;
+      if (
+        (el.classList.contains("sheet-backdrop") ||
+          el.classList.contains("dialog-backdrop")) &&
+        e.target !== el
+      )
+        return;
       action(el.dataset.action, el);
     }),
   );
+  $(".action-sheet")?.addEventListener("click", (e) => e.stopPropagation());
   $(".sheet")?.addEventListener("click", (e) => e.stopPropagation());
   app
     .querySelectorAll("[data-issue]")
@@ -504,12 +525,21 @@ $("#upload").onchange = async (e) => {
   }
 };
 document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape" && state.dialog) {
+    state.dialog = null;
+    render();
+    return;
+  }
   if (e.key === "Escape" && state.sheet) {
     state.sheet = false;
     render();
   }
-  if (state.sheet && e.key === "Tab") {
-    const focus = [...$(".sheet").querySelectorAll("button:not([disabled])")];
+  if ((state.sheet || state.dialog) && e.key === "Tab") {
+    const focus = [
+      ...$(state.dialog ? ".action-sheet" : ".sheet").querySelectorAll(
+        "button:not([disabled])",
+      ),
+    ];
     if (e.shiftKey && document.activeElement === focus[0]) {
       e.preventDefault();
       focus.at(-1).focus();
@@ -518,6 +548,32 @@ document.addEventListener("keydown", (e) => {
       focus[0].focus();
     }
   }
+});
+history.replaceState({ page: "camera" }, "", "#camera");
+window.addEventListener("popstate", async (e) => {
+  if (state.sheet || state.dialog) {
+    state.sheet = false;
+    state.dialog = null;
+    render();
+    history.pushState({ page: state.page }, "", "#" + state.page);
+    return;
+  }
+  if (
+    state.page === "editor" &&
+    JSON.stringify(state.adjust) !== JSON.stringify(defaults)
+  ) {
+    state.dialog = "discard";
+    history.pushState({ page: "editor" }, "", "#editor");
+    render();
+    return;
+  }
+  const page = e.state?.page || "camera";
+  await go(
+    ["detail", "editor", "diagnosis"].includes(page) && !state.current
+      ? "album"
+      : page,
+    false,
+  );
 });
 window.addEventListener("pagehide", stopCamera);
 document.addEventListener("visibilitychange", () => {
