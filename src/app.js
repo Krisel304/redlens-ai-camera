@@ -39,11 +39,23 @@ const esc = (s) =>
       ],
   );
 function toast(s) {
+  clearTimeout(toastTimer);
+  $("#toast").classList.remove("show");
+  const inline =
+    state.page === "camera" && ($(".composition-hint") || $("#camera-status"));
+  if (inline) {
+    const original = inline.innerHTML;
+    inline.textContent = s;
+    toastTimer = setTimeout(() => {
+      if (inline.isConnected) inline.innerHTML = original;
+    }, 2800);
+    return;
+  }
   $("#toast").textContent = s;
   $("#toast").classList.add("show");
-  clearTimeout(toastTimer);
   toastTimer = setTimeout(() => $("#toast").classList.remove("show"), 2800);
 }
+
 function btn(action, content, cls = "", extra = "") {
   return `<button class="${cls}" data-action="${action}" ${extra}>${content}</button>`;
 }

@@ -3,7 +3,7 @@
 - 正式访问：https://redlens-ai-camera.vercel.app
 - 公开源码：https://github.com/Krisel304/redlens-ai-camera
 - 本地源码：/Users/kairos/Documents/ChatGPT/个人项目/redlens-ai-camera
-- 版本：v1.4.1，2026-10-16。
+- 版本：v1.4.2，2026-10-21。
 - 发布方式：GitHub main → Vercel 自动构建；构建命令 npm run build，产物 dist。
 - 首次部署：Vercel 页面已显示 Congratulations，部署地址 redlens-ai-camera-bopqm6wjm-k-k-k1.vercel.app。
 
@@ -14,3 +14,5 @@
 v1.4.0：主站直接进入手机应用，取消 v1.3.0 的设备展示外壳。手机页面、内部抽屉、底部操作与返回逻辑重新设计，既有个人照片保留。
 
 v1.4.1：构图选择栏位于取景区下方，无模板弹窗/遮罩，展开时继续操作快门和相机；详细指导移出取景画面。
+
+v1.4.2：采用 iOS 相机式层级与深色半透明材质，白色快门、下方场景选择、顶部 AI 开关，模板与普通提示不盖住取景。

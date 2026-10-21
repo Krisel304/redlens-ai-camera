@@ -13,7 +13,35 @@ export function createViews({
   const note = (text) => `<p class="capability-note">${i("info")}${text}</p>`;
   function camera() {
     const t = template();
-    return `<header class="camera-header"><div class="wordmark">RedLens <span>AI CAMERA</span></div>${b("simulate", i("album") + " 体验模拟拍摄", "simulate")}</header><section class="camera-screen"><div class="scene-tabs" aria-label="拍摄场景">${["智能", "人像", "风景", "静物"].map((x) => b("scene", (x === "智能" ? i("spark") : "") + x, `scene ${s.scene === x ? "selected" : ""}`, `data-scene="${x}" ${x === "智能" && !s.ai ? "disabled" : ""}`)).join("")}</div><div class="viewfinder ${s.mode === "idle" ? "idle" : ""}">${s.mode === "live" ? '<video id="camera-video" autoplay playsinline muted></video>' : `<img class="scene-image" src="${samples[0].url}" alt="${s.mode === "sim" ? "模拟取景：雪场环境人像" : "滑雪人像样例预览"}">`}${s.mode === "idle" ? `<div class="camera-empty"><span class="empty-camera-icon">${i("camera")}</span><span class="eyebrow">YOUR NEXT GREAT SHOT</span><h2>好照片，从这里开始</h2><p id="camera-status">开启相机捕捉此刻，<br>或用你的真实样例体验完整创作。</p>${b("start-camera", i("camera") + " 开启相机", "primary")}${b("simulate", "先体验模拟拍摄 " + i("right"), "text-btn")}</div>` : `<div class="viewfinder-top"><span class="mode-label"><span class="live-dot"></span>${s.mode === "sim" ? "模拟体验" : "实时取景"}</span>${b("grid", i("grid"), `view-btn ${s.grid ? "on" : ""}`, `aria-label="切换构图线" aria-pressed="${s.grid}"`)}</div>${s.grid ? grid() : ""}<div class="viewfinder-bottom"><span>1×</span><span>原图比例</span></div>`}</div><div class="camera-bottom">${s.sheet ? sheet() : ""}${s.mode !== "idle" ? `<div class="composition-hint"><b>${t.name}</b><span>${s.ai ? t.desc : "手动构图 · 按所选模板取景"}</span></div>` : ""}<div class="ai-control"><div>${i("spark")}<strong>AI 辅助</strong><small>${s.ai ? "构图建议已开启" : "自由拍摄"}</small></div>${b("ai", "<span></span>", `toggle ${s.ai ? "on" : ""}`, `role="switch" aria-label="AI 辅助" aria-checked="${s.ai}"`)}</div><div class="shutter-row">${b("album", (s.photos[0] ? `<img src="${s.photos[0].url}" alt="最近拍摄">` : i("album")) + "<small>相册</small>", "album-control", 'aria-label="打开相册"')}<div class="shutter-wrap">${b("capture", "<span></span>", "shutter", `aria-label="拍照" ${s.mode === "idle" ? "disabled" : ""}`)}<span>照片</span></div>${b("templates", i("grid") + "<small>构图模板</small>", `template-control ${s.sheet ? "active" : ""}`, `aria-expanded="${s.sheet}" aria-controls="template-dock"`)}</div><div class="camera-foot">${s.mode === "sim" ? b("start-camera", i("switch") + " 真实相机", "text-btn") : s.mode === "live" ? b("switch-camera", i("switch") + " 切换镜头", "text-btn") : b("upload", i("upload") + " 导入照片", "text-btn")}${b("about", "本地辅助 · 隐私保护 " + i("info"), "text-btn")}</div></div></section>`;
+    const scenes = ["智能", "人像", "风景", "静物"]
+      .map((x) =>
+        b(
+          "scene",
+          (x === "智能" ? i("spark") : "") + x,
+          `scene ${s.scene === x ? "selected" : ""}`,
+          `data-scene="${x}" aria-pressed="${s.scene === x}" ${x === "智能" && !s.ai ? "disabled" : ""}`,
+        ),
+      )
+      .join("");
+    const ai = `<div class="ai-control"><span>${i("spark")} AI</span>${b("ai", "<span></span>", `toggle ${s.ai ? "on" : ""}`, `role="switch" aria-label="AI 辅助" aria-checked="${s.ai}"`)}</div>`;
+    return `<header class="camera-header"><div class="wordmark">RedLens<span>AI CAMERA</span></div><div class="camera-toolbar">${ai}${b("simulate", i("album") + "<span>体验模拟拍摄</span>", "simulate")}</div></header>
+      <section class="camera-screen" aria-label="相机">
+        <div class="viewfinder ${s.mode === "idle" ? "idle" : ""}">
+          ${s.mode === "live" ? '<video id="camera-video" autoplay playsinline muted></video>' : `<img class="scene-image" src="${samples[0].url}" alt="${s.mode === "sim" ? "模拟取景：雪场环境人像" : "滑雪人像样例预览"}">`}
+          ${s.mode === "idle" ? `<div class="camera-empty"><span class="empty-camera-icon">${i("camera")}</span><span class="eyebrow">REDLENS AI CAMERA</span><h2>专注眼前，自在拍摄。</h2><p id="camera-status">开启相机，捕捉此刻。<br>也可以先用样例体验。</p>${b("start-camera", i("camera") + " 开启相机", "primary")}${b("simulate", "先体验模拟拍摄 " + i("right"), "text-btn")}</div>` : `<div class="viewfinder-top"><span class="mode-label"><span class="live-dot"></span>${s.mode === "sim" ? "模拟体验" : "实时取景"}</span>${b("grid", i("grid"), `view-btn ${s.grid ? "on" : ""}`, `aria-label="切换构图线" aria-pressed="${s.grid}"`)}</div>${s.grid ? grid() : ""}<div class="viewfinder-bottom"><span>1×</span><span>原图比例</span></div>`}
+        </div>
+        <div class="camera-bottom">
+          <div class="scene-tabs" aria-label="拍摄场景">${scenes}</div>
+          ${s.sheet ? sheet() : ""}
+          ${s.mode !== "idle" ? `<div class="composition-hint" role="status" aria-live="polite"><b>${t.name}</b><span>${s.ai ? t.desc : "手动构图 · 按所选模板取景"}</span></div>` : ""}
+          <div class="shutter-row">
+            ${b("album", (s.photos[0] ? `<img src="${s.photos[0].url}" alt="最近拍摄">` : i("album")) + "<small>相册</small>", "album-control", 'aria-label="打开相册"')}
+            <div class="shutter-wrap">${b("capture", "<span></span>", "shutter", `aria-label="拍照" ${s.mode === "idle" ? "disabled" : ""}`)}<span>照片</span></div>
+            ${b("templates", i("grid") + "<small>构图模板</small>", `template-control ${s.sheet ? "active" : ""}`, `aria-expanded="${s.sheet}" aria-controls="template-dock"`)}
+          </div>
+          <div class="camera-foot">${s.mode === "sim" ? b("start-camera", i("switch") + " 真实相机", "text-btn") : s.mode === "live" ? b("switch-camera", i("switch") + " 切换镜头", "text-btn") : b("upload", i("upload") + " 导入照片", "text-btn")}${b("about", "本地辅助 " + i("info"), "text-btn")}</div>
+        </div>
+      </section>`;
   }
   function album() {
     return `${top("相册", "camera", b("upload", i("upload"), "icon-btn", 'aria-label="导入照片"'))}<section class="scroll-screen album-page"><div class="page-intro"><span class="eyebrow">YOUR MOMENTS, YOUR STORIES</span><h2>把值得的瞬间，留下来。</h2><p>拍摄、发现，再创作。</p></div><section class="samples-section"><div class="samples-heading">${b("expand", `<strong>灵感样例 <span>4</span></strong>${i("chevron")}`, s.expanded ? "expanded" : "", `aria-expanded="${s.expanded}"`)}<div>${b("sample-prev", i("arrow"), "icon-btn", 'aria-label="上一张样例"')}${b("sample-next", i("right"), "icon-btn", 'aria-label="下一张样例"')}</div></div>${s.expanded ? `<div class="sample-strip">${samples.map((p) => b("sample", `<img src="${p.url}" alt="${p.name}" draggable="false"><div><small>${p.scene} · 样例</small><b>${p.name}</b></div>`, "sample-photo", `data-id="${p.id}"`)).join("")}</div>` : ""}</section><div class="section-label"><h3>我的照片 <span>${s.photos.length}</span></h3><span>仅此设备可见</span></div>${s.photos.length ? `<div class="photo-grid">${s.photos.map((p) => b("photo", `<div class="photo-thumb"><img src="${p.url}" alt="${esc(p.name)}">${p.edited ? "<span>编辑版本</span>" : ""}</div><b>${esc(p.name)}</b><small>${p.source} · ${new Date(p.created).toLocaleDateString("zh-CN")}</small>`, "photo-tile", `data-id="${p.id}"`)).join("")}</div>` : `<div class="empty-album">${i("album")}<h3>让第一张好照片发生</h3><p>拍一张，或导入一张喜欢的照片。</p>${b("camera", "去拍摄 " + i("right"), "primary")}${b("upload", "从设备导入", "text-btn")}</div>`}${note("样例不会计入我的照片。个人照片仅保存在当前浏览器，重要作品请及时下载。")}</section><nav class="bottom-nav">${b("camera", i("camera") + " 拍摄", "")}${b("album", i("album") + " 相册", "selected")}</nav>`;

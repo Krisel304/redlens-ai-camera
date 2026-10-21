@@ -2,14 +2,16 @@
   font-family:
     -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue",
     "PingFang SC", sans-serif;
-  color: #282b32;
-  background: #e9eaed;
+  color: #f5f5f7;
+  background: #050506;
   font-synthesis: none;
   --coral: #e65b49;
-  --muted: #9599a2;
-  --border: #ececef;
-  --surface: #f8f8fa;
-  color-scheme: light;
+  --muted: #a7a7ad;
+  --border: #ffffff14;
+  --surface: #101012;
+  --glass: #242427b8;
+  --camera-accent: #ffd60a;
+  color-scheme: dark;
 }
 * {
   box-sizing: border-box;
@@ -105,8 +107,8 @@ a {
   display: grid;
   grid-template-columns: 64px 1fr 64px;
   align-items: center;
-  background: #f8f8faee;
-  border-bottom: 1px solid #eeeff2;
+  background: #1c1c1ec7;
+  border-bottom: 1px solid #ffffff12;
   z-index: 2;
 }
 .screen-header h1 {
@@ -167,8 +169,8 @@ a {
   height: 18px;
 }
 .secondary {
-  background: #eeeff2;
-  color: #616773;
+  background: #ffffff12;
+  color: #e5e5ea;
 }
 .text-btn {
   min-height: 44px;
@@ -197,7 +199,7 @@ a {
 }
 .section-label h3 {
   font-size: 16px;
-  color: #343942;
+  color: #f2f2f7;
   font-weight: 600;
 }
 .section-label h3 span {
@@ -260,7 +262,7 @@ a {
   min-height: 40px;
   padding: 8px 13px;
   border-radius: 20px;
-  background: #eeeff2;
+  background: #ffffff12;
   color: #737b87;
   font-size: 11px;
 }
@@ -300,7 +302,7 @@ a {
 }
 .scene.selected {
   color: var(--coral);
-  background: #fbece7;
+  background: #ffffff14;
   font-weight: 600;
 }
 .viewfinder {
@@ -308,7 +310,7 @@ a {
   flex: 1;
   min-height: 180px;
   overflow: hidden;
-  background: #192430;
+  background: #050506;
   border-radius: 21px;
   isolation: isolate;
 }
@@ -434,37 +436,6 @@ a {
 .view-btn.on {
   color: #fff;
 }
-.guidance {
-  position: absolute;
-  left: 14px;
-  right: 14px;
-  bottom: 48px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 12px 14px;
-  background: #1c293c8c;
-  border: 1px solid #ffffff24;
-  backdrop-filter: blur(20px);
-  border-radius: 14px;
-  color: #fff;
-}
-.guidance > .icon {
-  width: 20px;
-  color: #e8cfaa;
-}
-.guidance b {
-  display: block;
-  font-size: 12px;
-  font-weight: 500;
-}
-.guidance span {
-  display: block;
-  font-size: 10px;
-  line-height: 1.8;
-  color: #d7dde4;
-  margin-top: 4px;
-}
 .viewfinder-bottom {
   position: absolute;
   bottom: 13px;
@@ -520,7 +491,7 @@ a {
   width: 40px;
   height: 24px;
   border-radius: 20px;
-  background: #d4d7de;
+  background: #636366;
   padding: 3px;
 }
 .toggle:after {
@@ -532,7 +503,7 @@ a {
   display: block;
   width: 18px;
   height: 18px;
-  background: white;
+  background: #ffffff0a;
   box-shadow: 0 1px 3px #0002;
   border-radius: 50%;
   transition: transform 0.2s;
@@ -738,7 +709,7 @@ a {
   border-radius: 14px;
   overflow: hidden;
   aspect-ratio: 3/4;
-  background: #eef0f3;
+  background: #1c1c1e;
 }
 .photo-thumb img {
   height: 100%;
@@ -752,10 +723,10 @@ a {
   top: 9px;
   font-size: 9px;
   padding: 5px 7px;
-  background: #fff9;
+  background: #242427b8;
   backdrop-filter: blur(12px);
   border-radius: 8px;
-  color: #505b6a;
+  color: #e5e5ea;
 }
 .photo-tile > b {
   font-size: 12px;
@@ -773,7 +744,7 @@ a {
 }
 .empty-album {
   text-align: center;
-  border: 1px dashed #dddfe5;
+  border: 1px dashed #ffffff25;
   border-radius: 17px;
   padding: 31px 16px;
   display: flex;
@@ -807,8 +778,8 @@ a {
   display: flex;
   flex-shrink: 0;
   justify-content: space-around;
-  border-top: 1px solid #e8eaf0;
-  background: #fafafbf2;
+  border-top: 1px solid #ffffff12;
+  background: #1c1c1ec7;
   padding: 5px 25px max(6px, env(safe-area-inset-bottom));
 }
 .bottom-nav button {
@@ -832,7 +803,7 @@ a {
   padding: 0 0 24px;
 }
 .photo-stage {
-  background: #19232f;
+  background: #050506;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -871,7 +842,7 @@ a {
   height: 37px;
   width: 37px;
   border-radius: 12px;
-  background: #fceae3;
+  background: #e65b491a;
   color: var(--coral);
   display: grid;
   place-items: center;
@@ -901,8 +872,8 @@ a {
 }
 .detail-bottom {
   padding: 12px 20px max(6px, env(safe-area-inset-bottom));
-  border-top: 1px solid #eeeff2;
-  background: #f8f8fa;
+  border-top: 1px solid #ffffff12;
+  background: #1c1c1ebd;
   flex-shrink: 0;
 }
 .detail-primary {
@@ -962,7 +933,7 @@ a {
   width: 91px;
   height: 91px;
   border-radius: 50%;
-  background: conic-gradient(var(--coral) var(--score), #eee7e1 0);
+  background: conic-gradient(var(--coral) var(--score), #ffffff14 0);
   padding: 6px;
   flex-shrink: 0;
 }
@@ -997,9 +968,9 @@ a {
 }
 .scores {
   padding: 19px 18px;
-  background: white;
+  background: #ffffff0a;
   border-radius: 16px;
-  border: 1px solid #f0f0f3;
+  border: 1px solid #ffffff14;
 }
 .scores > div {
   display: flex;
@@ -1014,7 +985,7 @@ a {
 }
 .scores > div > div {
   height: 5px;
-  background: #f1efed;
+  background: #ffffff1a;
   border-radius: 6px;
   flex: 1;
   overflow: hidden;
@@ -1035,10 +1006,10 @@ a {
   align-items: start;
   gap: 10px;
   padding: 15px;
-  background: #f3efe4;
+  background: #ffd60a0d;
   border-radius: 12px;
   margin: 18px 0 27px;
-  color: #a7956d;
+  color: #d2c493;
 }
 .highlight .icon {
   width: 18px;
@@ -1054,7 +1025,7 @@ a {
   align-items: start;
   gap: 13px;
   padding: 17px 2px;
-  border-bottom: 1px solid #ebedf1;
+  border-bottom: 1px solid #ffffff14;
   cursor: pointer;
 }
 .issue input {
@@ -1067,7 +1038,7 @@ a {
 .issue b {
   font-size: 13px;
   font-weight: 550;
-  color: #616c7a;
+  color: #dedee5;
 }
 .issue small {
   font-size: 11px;
@@ -1082,8 +1053,8 @@ a {
 }
 .sticky-action {
   padding: 12px 20px max(16px, env(safe-area-inset-bottom));
-  border-top: 1px solid #ebedf1;
-  background: #f8f8fa;
+  border-top: 1px solid #ffffff14;
+  background: #1c1c1ebd;
   flex-shrink: 0;
 }
 .editor-screen {
@@ -1096,7 +1067,7 @@ a {
   position: relative;
   flex: 1;
   min-height: 150px;
-  background: #19232f;
+  background: #050506;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1124,8 +1095,8 @@ a {
   bottom: 15px;
   right: 15px;
   min-height: 36px;
-  background: #f9fafad9;
-  color: #616c79;
+  background: #242427b8;
+  color: #f5f5f7;
   backdrop-filter: blur(15px);
   padding: 8px 13px;
   font-size: 11px;
@@ -1161,7 +1132,7 @@ a {
 }
 .adjustment-tabs button {
   flex: 1;
-  border: 1px solid #e7e9ee;
+  border: 1px solid #ffffff20;
   border-radius: 12px;
   min-height: 57px;
   padding: 8px 4px;
@@ -1174,8 +1145,8 @@ a {
   color: #adb5bf;
 }
 .adjustment-tabs .selected {
-  background: #fbede8;
-  border-color: #f3d6cc;
+  background: #e65b491a;
+  border-color: #e65b4960;
   color: var(--coral);
 }
 .adjustment-tabs .selected small {
@@ -1223,14 +1194,14 @@ a {
   flex: 1;
   min-height: 37px;
   border-radius: 9px;
-  border: 1px solid #e7e9ee;
+  border: 1px solid #ffffff20;
   font-size: 11px;
   color: #929da9;
 }
 .crop-options .selected {
   color: var(--coral);
-  border-color: #efc8bb;
-  background: #fbefea;
+  border-color: #e65b4960;
+  background: #e65b491a;
 }
 .editor-note {
   font-size: 9px;
@@ -1254,7 +1225,7 @@ a {
   max-height: 90%;
   overflow-y: auto;
   overscroll-behavior: contain;
-  background: #f8f8fa;
+  background: #1c1c1ebd;
   border-radius: 26px 26px 0 0;
   padding: 10px 20px max(24px, env(safe-area-inset-bottom));
   box-shadow: 0 -10px 35px #17233310;
@@ -1282,7 +1253,7 @@ a {
   height: 49px;
   width: 49px;
   border-radius: 17px;
-  background: #f7eae5;
+  background: #e65b491a;
   color: #d27b61;
   margin: 0 auto 17px;
 }
@@ -1313,13 +1284,13 @@ a {
   font-weight: 500;
 }
 .danger-action {
-  background: #fae9e5;
+  background: #ff453a16;
   color: #d45b49;
 }
 .cancel-action {
-  background: #eeeff3;
+  background: #ffffff12;
   margin-top: 10px;
-  color: #697383;
+  color: #e5e5ea;
 }
 .action-sheet > .primary {
   font-size: 14px;
@@ -1356,7 +1327,7 @@ a {
   position: absolute;
   inset: 0;
   z-index: 10;
-  background: white;
+  background: #ffffff0a;
   animation: fade-in 0.2s reverse;
   pointer-events: none;
 }
@@ -1533,15 +1504,15 @@ a {
   align-items: center;
   justify-content: center;
   gap: 4px;
-  border: 1px solid #e2e5ea;
+  border: 1px solid #ffffff1f;
   border-radius: 12px;
-  background: #f5f6f8;
+  background: #ffffff09;
   font-size: 11px;
 }
 .dock-option.selected {
   border-color: var(--coral);
   color: var(--coral);
-  background: #fff4ef;
+  background: #ffd60a15;
 }
 .dock-option small {
   position: absolute;
@@ -1607,4 +1578,330 @@ a {
 .dock-mini .guide path,
 .dock-mini .guide circle {
   stroke-width: 8;
+}
+
+/* iOS camera hierarchy: compact toolbar, edge-to-edge lens, modes, white shutter.
+   Control surfaces stay in flow so opening templates never covers the lens. */
+#app[data-page="camera"] .product-content {
+  background: #080809;
+}
+.camera-header {
+  min-height: 58px;
+  padding: 0 16px;
+  gap: 10px;
+  background: #18181ab8;
+}
+.wordmark {
+  font-size: 19px;
+  letter-spacing: -0.8px;
+  color: #f5f5f7;
+}
+.wordmark span {
+  font-size: 6px;
+  letter-spacing: 2.2px;
+  color: #b5b5bc;
+}
+.camera-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.camera-toolbar .ai-control {
+  gap: 8px;
+  min-height: 44px;
+  padding: 0;
+}
+.ai-control > span {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  font-weight: 600;
+}
+.ai-control > span .icon {
+  width: 14px;
+  height: 14px;
+  color: var(--camera-accent);
+}
+.toggle {
+  width: 34px;
+  height: 22px;
+}
+.toggle > span {
+  width: 16px;
+  height: 16px;
+  background: #fff;
+}
+.toggle.on {
+  background: #34c759;
+}
+.toggle.on > span {
+  transform: translateX(12px);
+}
+.simulate {
+  min-height: 44px;
+  padding: 8px 11px;
+  border: 1px solid #ffffff15;
+  background: #ffffff0b;
+  color: #e6e6eb;
+  font-size: 10px;
+}
+.camera-screen {
+  padding: 0;
+}
+.viewfinder {
+  border-radius: 0;
+  min-height: 180px;
+}
+.viewfinder-top {
+  top: 12px;
+  left: 14px;
+  right: 14px;
+}
+.view-btn {
+  width: 44px;
+  height: 44px;
+  background: #2424279c;
+  border: 1px solid #ffffff15;
+}
+.view-btn.on {
+  color: var(--camera-accent);
+}
+.mode-label {
+  height: 28px;
+  margin-top: 8px;
+  font-size: 9px;
+  background: #2424279c;
+  border-color: #ffffff1a;
+}
+.viewfinder-bottom span:first-child {
+  width: 38px;
+  height: 38px;
+  font-size: 12px;
+  background: #242427b8;
+  color: var(--camera-accent);
+}
+.camera-bottom {
+  padding: 0 18px max(4px, env(safe-area-inset-bottom));
+  background: linear-gradient(#1c1c1eae, #111113d9);
+}
+.scene-tabs {
+  min-height: 44px;
+  gap: 8px;
+}
+.scene {
+  min-height: 44px;
+  padding: 8px 15px;
+  font-size: 13px;
+  color: #b7b7bc;
+  border-radius: 0;
+}
+.scene.selected {
+  background: transparent;
+  color: var(--camera-accent);
+  font-weight: 600;
+}
+.composition-hint {
+  min-height: 32px;
+  padding: 3px 0;
+  gap: 8px;
+}
+.composition-hint b {
+  color: #e3e3e8;
+  font-size: 10px;
+}
+.composition-hint span {
+  color: #a7a7ae;
+  font-size: 10px;
+}
+.shutter-row {
+  min-height: 100px;
+  padding: 4px 0;
+}
+.shutter {
+  height: 72px;
+  width: 72px;
+  border: 3px solid #fff;
+  padding: 4px;
+}
+.shutter > span {
+  background: #fff;
+}
+.shutter-wrap > span {
+  color: #b7b7bd;
+  font-size: 9px;
+  margin-top: 5px;
+}
+.album-control,
+.template-control {
+  min-width: 68px;
+  min-height: 68px;
+  color: #e5e5ea;
+}
+.album-control > .icon,
+.template-control > .icon {
+  width: 28px;
+  height: 28px;
+  padding: 7px;
+  box-sizing: content-box;
+  border-radius: 50%;
+  background: #ffffff0e;
+}
+.album-control img {
+  border-color: #ffffff50;
+  outline: none;
+  border-radius: 7px;
+}
+.template-control.active {
+  color: var(--camera-accent);
+}
+.camera-foot {
+  min-height: 44px;
+}
+.camera-foot .text-btn {
+  min-height: 44px;
+  font-size: 10px;
+  color: #a7a7ae;
+}
+.camera-foot .icon {
+  height: 16px;
+  width: 16px;
+}
+.template-dock {
+  margin: 0 0 4px;
+  padding: 0 10px 10px;
+  background: #ffffff07;
+  border: 1px solid #ffffff10;
+  border-radius: 18px;
+}
+.template-dock header {
+  min-height: 40px;
+  color: #e5e5ea;
+}
+.template-dock header > span {
+  display: flex;
+  align-items: center;
+}
+.template-dock header small {
+  color: #a7a7ae;
+}
+.template-dock header .icon-btn {
+  height: 44px;
+}
+.dock-option {
+  min-height: 66px;
+  border-color: #ffffff1f;
+  color: #d3d3d9;
+}
+.dock-option.selected {
+  color: var(--camera-accent);
+  border-color: #ffd60a90;
+  background: #ffd60a12;
+}
+.dock-mini {
+  background: #56565d;
+}
+.camera-empty .primary {
+  background: #ffffffeb;
+  color: #111;
+  border-radius: 24px;
+}
+.camera-empty .text-btn {
+  color: #d6d6dc;
+}
+.screen-header,
+.bottom-nav,
+.detail-bottom,
+.sticky-action,
+.editor-tools,
+.action-sheet,
+.simulate,
+.view-btn,
+.template-dock,
+.compare-button {
+  -webkit-backdrop-filter: blur(24px) saturate(140%);
+  backdrop-filter: blur(24px) saturate(140%);
+}
+.screen-header {
+  border-bottom-color: #ffffff0d;
+}
+.icon-btn {
+  color: #d1d1d7;
+}
+.editor-tools,
+.sticky-action {
+  background: #1c1c1ebd;
+}
+.action-sheet {
+  background: #242427e8;
+  border: 1px solid #ffffff15;
+}
+.dialog-backdrop {
+  background: #0008;
+  -webkit-backdrop-filter: blur(4px);
+}
+#toast {
+  background: #28282be8;
+  -webkit-backdrop-filter: blur(16px);
+}
+.flash:after {
+  background: #fff;
+}
+@media (max-height: 720px) {
+  .camera-header {
+    min-height: 54px;
+  }
+  .camera-screen {
+    padding: 0;
+  }
+  .camera-bottom {
+    padding-top: 0;
+  }
+  .shutter-row {
+    min-height: 90px;
+  }
+  .shutter {
+    width: 66px;
+    height: 66px;
+  }
+  .template-dock {
+    padding-bottom: 8px;
+  }
+  .dock-option {
+    min-height: 58px;
+  }
+  .template-dock header {
+    min-height: 36px;
+  }
+  .composition-hint {
+    min-height: 30px;
+  }
+}
+@media (max-width: 360px) {
+  .camera-header {
+    padding: 0 12px;
+    gap: 6px;
+  }
+  .camera-toolbar {
+    gap: 6px;
+  }
+  .wordmark {
+    font-size: 17px;
+  }
+  .simulate {
+    padding: 8px;
+    font-size: 9px;
+  }
+  .camera-bottom {
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+  .scene {
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+}
+
+.camera-toolbar .toggle:after {
+  inset: -11px -5px;
 }
